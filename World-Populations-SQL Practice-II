@@ -1,0 +1,54 @@
+--tables countries, population_years
+
+--africa entries
+select count(id) as 'Africa Entries' from countries
+where name = 'Africa';
+
+select * from countries
+limit 5;
+
+select * from population_years
+limit 5;
+
+--new table to work
+create table world_population as 
+Select
+name,
+continent,
+population,
+year
+from countries co
+join population_years py
+on co.id = py.country_id;
+select * from world_population
+limit 5;
+
+--total population on oceania at 2005
+select round(sum(population),2) as 'Oceania 2005 Population' from world_population
+where continent = 'Oceania'
+and year = 2005;
+
+--average population of south america at 2003
+select round(avg(population),2) as 'South America 2003 Population '
+from world_population
+where continent = 'South America'
+and year = 2003;
+
+--Country with smalest population at 2007
+select name as 'Country', min(population) as 'Smallest 2007 Population'
+from world_population
+where year = 2007;
+
+--Average population of Poland during the time
+select round(avg(population),2) as 'Poland Average Population During Time' from world_population
+where name = 'Poland';
+
+--Number of countries the data set have
+select count(distinct(name)) as 'Number of Countries with "The" in their name' from world_population
+where name like '%The%';
+
+--Total Population if each continent in 2010
+select continent as 'Continent', sum(population) as 'Total Population 2010' from world_population
+where year = 2010
+group by 1
+order by 2 desc;

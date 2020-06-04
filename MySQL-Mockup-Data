@@ -1,0 +1,173 @@
+select * from users
+limit 3;
+
+select * from progress
+limit 3;
+
+create table users_progress as
+select 
+u.user_id,
+email_domain,
+country,
+city,
+postal,
+mobile_app,
+sign_up_at,
+learn_cpp,
+learn_sql,
+learn_html,
+learn_javascript,
+learn_java
+from users u
+join progress p
+on
+u.user_id = p.user_id;
+--new table test
+select * from users_progress
+limit 3;
+
+--Top 25 Schools with .edu domains
+select email_domain as 'Schools', count(user_id) as 'Enroled' from users_progress
+where email_domain like '%.edu'
+group by 1
+order by 2 desc
+limit 25;
+
+--.edu learners located in New york
+select count(user_id) as '.edu New York Learners' from users_progress
+where email_domain like '%.edu'
+and city = 'New York';
+
+--users using mobil app
+select count(distinct(user_id)) as 'Learners Using Mobile App'
+from users_progress
+where mobile_app is not null;
+
+--Sign ups per hour
+select sign_up_at as 'Hours', strftime('%H', sign_up_at) as 'Sign Up Counts'
+from users_progress
+group by 1
+order by 1 asc
+limit 5;
+
+
+--Courses prefferences for .edu domain
+Select
+  count(user_id) as 'Enroled',
+  email_domain as 'Schools',
+count (learn_cpp) as 'CPP',
+count (learn_sql) as 'SQL',
+count (learn_html) as 'HTML',
+count (learn_javascript) as 'Javascript',
+count (learn_java) as 'Java'
+from
+  users_progress
+where
+  email_domain like '%.edu'
+  AND (learn_cpp = 'completed'
+  or learn_cpp = 'started')
+
+  AND (learn_sql = 'completed'
+  or learn_sql = 'started')
+
+  AND (learn_html = 'completed'
+  or learn_html = 'started')
+
+  AND(learn_javascript = 'completed'
+  or learn_javascript = 'started')
+  
+  AND(learn_java = 'completed'
+  or learn_java = 'started')
+
+GROUP BY email_domain;
+
+--Courses selection at .edu
+select count(learn_cpp) as 'CPP' from users_progress
+where email_domain like '%.edu'
+AND learn_cpp ='completed'
+OR learn_cpp = 'started';
+
+select count(learn_sql) as 'SQL' from users_progress
+where email_domain like '%.edu'
+AND learn_sql ='completed'
+OR learn_sql = 'started';
+
+select count(learn_html) 'HTML' from users_progress
+where email_domain like '%.edu'
+AND learn_html ='completed'
+OR learn_html = 'started';
+
+select count(learn_javascript) 'Javascript' from users_progress
+where email_domain like '%.edu'
+AND learn_javascript ='completed'
+OR learn_javascript = 'started';
+
+select count(learn_java) 'Java' from users_progress
+where email_domain like '%.edu'
+AND learn_java ='completed'
+OR learn_java = 'started';
+
+
+--New York Students Courses
+Select
+  count(user_id) as 'Enroled',
+  email_domain as 'Schools',
+count (learn_cpp) as 'CPP',
+count (learn_sql) as 'SQL',
+count (learn_html) as 'HTML',
+count (learn_javascript) as 'Javascript',
+count (learn_java) as 'Java'
+from
+  users_progress
+where
+   learn_cpp = 'completed'
+  or learn_cpp = 'started'
+
+  AND (learn_sql = 'completed'
+  or learn_sql = 'started')
+
+  AND (learn_html = 'completed'
+  or learn_html = 'started')
+
+  AND(learn_javascript = 'completed'
+  or learn_javascript = 'started')
+  
+  AND(learn_java = 'completed'
+  or learn_java = 'started')
+
+Group by email_domain
+HAVING city = 'New York'
+;
+
+--Chicago Students Courses
+Select
+  count(user_id) as 'Enroled',
+  email_domain as 'Schools',
+count (learn_cpp) as 'CPP',
+count (learn_sql) as 'SQL',
+count (learn_html) as 'HTML',
+count (learn_javascript) as 'Javascript',
+count (learn_java) as 'Java'
+from
+  users_progress
+where
+   learn_cpp = 'completed'
+  or learn_cpp = 'started'
+
+  AND (learn_sql = 'completed'
+  or learn_sql = 'started')
+
+  AND (learn_html = 'completed'
+  or learn_html = 'started')
+
+  AND(learn_javascript = 'completed'
+  or learn_javascript = 'started')
+  
+  AND(learn_java = 'completed'
+  or learn_java = 'started')
+
+Group by email_domain
+HAVING city = 'Chicago'
+;
+
+

@@ -1,0 +1,101 @@
+/*
+Here's the first-touch query, in case you need it
+*/
+
+WITH first_touch AS (
+    SELECT user_id,
+        MIN(timestamp) as first_touch_at
+    FROM page_visits
+    GROUP BY user_id)
+SELECT ft.user_id,
+    ft.first_touch_at,
+    pv.utm_source,
+		pv.utm_campaign
+FROM first_touch ft
+JOIN page_visits pv
+    ON ft.user_id = pv.user_id
+    AND ft.first_touch_at = pv.timestamp
+limit 10;
+
+select count(distinct utm_campaign)
+from page_visits;
+--8 distinc campaings
+
+select count(distinct utm_source) 
+from page_visits;
+--6 dif sources
+
+select distinct utm_campaign, utm_source
+from page_visits;
+--relation 
+
+select distinct page_name from page_visits;
+--types of pages
+
+WITH first_touch AS (
+    SELECT user_id,
+        MIN(timestamp) as first_touch_at
+    FROM page_visits
+    GROUP BY user_id),
+
+    ft_attr as (
+SELECT ft.user_id,
+    ft.first_touch_at,
+    pv.utm_source,
+		pv.utm_campaign
+FROM first_touch ft
+JOIN page_visits pv
+    ON ft.user_id = pv.user_id
+    AND ft.first_touch_at = pv.timestamp)
+    
+select ft_attr.utm_source, 
+          ft_attr.utm_campaign,
+          count(*)
+    from ft_attr
+    group by 1, 2
+    order by 3 desc;
+
+--last touches down here
+WITH last_touch AS (
+    SELECT user_id,
+        MAX(timestamp) as last_touch_at
+    FROM page_visits
+    GROUP BY user_id),
+
+    lt_attr as (
+SELECT lt.user_id,
+    lt.last_touch_at,
+    pv.utm_source,
+		pv.utm_campaign,
+    pv.page_name
+FROM last_touch lt
+JOIN page_visits pv
+    ON lt.user_id = pv.user_id
+    AND lt.last_touch_at = pv.timestamp)
+    
+select lt_attr.utm_source, 
+        lt_attr.utm_campaign,
+          count(*)
+    from lt_attr
+    group by 1, 2
+    order by 3 desc;
+
+--how many pucharse per visitor
+SELECT COUNT(*) as 'visitors purchase' FROM page_visits
+WHERE page_name = '4 - purchase';
+
+--how many last touches on the purchase page is each campgaign reposible
+WITH last_touch2 AS (
+  SELECT user_id,
+   utm_campaign,     
+         MAX(timestamp) AS last_touch_at
+  FROM page_visits
+  WHERE page_name = '4 - purchase'
+    GROUP BY user_id)
+select utm_campaign,
+        count(*) as 'last touches purchase'
+        from last_touch2
+        group by 1
+        order by 2 desc
+        limit 5;
+---top 5 campaings to invest again

@@ -1,0 +1,56 @@
+def grshipping_cost(weight):
+  if weight <= 2.0:
+    cost = 1.50
+  elif weight >= 2.0 and weight <= 6.0:
+    cost = 3.00
+  elif weight >= 6.0 and weight <= 10.0:
+    cost = 4.00
+  else:
+    cost = 4.75
+  return 20 + (weight * cost)
+#test ground shipping cost 
+grshipping_cost(8.4)
+
+def premgr_shipping_cost(weight):
+  return 20 + 125
+
+def drone_shipping_cost(weight):
+  if weight <= 2.0:
+    cost = 4.50
+  elif weight >= 2.0 and weight <= 6.0:
+    cost = 9.00
+  elif weight >= 6.0 and weight <= 10.0:
+    cost = 12.00
+  else:
+    cost = 14.25
+  return weight * cost
+
+#test drone shipping cost
+drone_shipping_cost(1.5)
+
+def cheapest_shipping_service(weight):
+  ground = grshipping_cost(weight)
+  premium = premgr_shipping_cost(weight)
+  drone = drone_shipping_cost(weight)
+
+  if ground < premium and ground < drone:
+    method = "Standard ground shipping"
+    cost = ground
+  elif premium < ground and premium < drone:
+    method = "Premium Shipping"
+    cost = premium
+  else:
+    method = "Drone Shipping"
+    cost = drone
+
+  print("The cheapest option available is $%.2f with %s  "
+    %(cost, method)
+  )
+
+#testing last
+cheapest_shipping_service(4.8)
+cheapest_shipping_service(41.5)
+
+
+
+  
